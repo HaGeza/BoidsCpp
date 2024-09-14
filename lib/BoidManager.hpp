@@ -1,9 +1,13 @@
-#include "IDisplay.hpp"
+#include "display/IDisplay.hpp"
 
 class BoidManager {
+    IDisplay* display;
+    vec<Boid> boids;
+    // QTree* qTree;
+    // ThreadPool* threadPool;
+
    public:
-    BoidManager(const IDisplay& display);
-    BoidManager(const IDisplay& display, unsigned int numBoids);
+    BoidManager(IDisplay* display, uint numBoids);
     ~BoidManager();
 
     void start();

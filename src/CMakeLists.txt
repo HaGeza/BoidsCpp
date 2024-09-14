@@ -1,6 +1,12 @@
 file(GLOB_RECURSE SRC_FILES "**.cpp")
 add_library(Library SHARED ${SRC_FILES})
 
+# Link SFML libraries to this library
+target_link_libraries(Library sfml-graphics sfml-window sfml-system)
+
+# Include SFML directories for the library
+target_include_directories(Library PRIVATE ${SFML_INCLUDE_DIR})
+
 # Define a function to check if a file contains a specific keyword
 function(file_contains_keyword FILE_PATH KEYWORD RESULT)
     file(READ ${FILE_PATH} FILE_CONTENT)

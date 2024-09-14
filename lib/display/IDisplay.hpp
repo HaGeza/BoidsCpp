@@ -1,7 +1,10 @@
+#pragma once
+
 #include "Boid.hpp"
 #include "typedefs.hpp"
 
 class IDisplay {
-    virtual void initialize(vec<Boid> boids);
-    virtual void update(vec<Boid> boids);
+   public:
+    virtual void initialize(vec<Boid> boids) = 0;
+    virtual void update(vec<Boid> boids) = 0;
 };

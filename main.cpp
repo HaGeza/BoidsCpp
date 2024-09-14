@@ -4,7 +4,8 @@
 #include <stdexcept>
 #include <string>
 
-#include "typedefs.hpp"
+#include "BoidManager.hpp"
+#include "display/Display.hpp"
 
 // Enum for display type
 enum class DisplayType { ASCII, SFML, UNKNOWN };
@@ -73,12 +74,28 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // Output the parsed values
     std::cout << "Display Type: " << DisplayTypeToStr::getStr(displayType)
               << std::endl;
     std::cout << "Number of Boids: " << numBoids << std::endl;
 
-    // Your code to initialize and run the simulation goes here
+    // Run simulation
+    IDisplay* display;
+    switch (displayType) {
+        case DisplayType::ASCII:
+            display = new ASCIIDisplay(80, 32);
+            break;
+        case DisplayType::SFML:
+            display = new SFMLDisplay(800, 600);
+            break;
+        default:
+            return 1;
+    }
+
+    BoidManager boidManager(display, numBoids);
+
+    boidManager.start();
+
+    // TODO: implement some stopping mechanism
 
     return 0;
 }

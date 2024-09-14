@@ -4,17 +4,19 @@ project(boids)
 
 enable_testing()
 
+# sfml
+find_package(SFML 2.6.1 COMPONENTS graphics window system REQUIRED)
+
 # doctest
 set(DOCTEST_LIB doctest)
-include_directories(lib ${DOCTEST_LIB})
 set(doctest "${DOCTEST_LIB}/doctest.h")
 add_library(doctest INTERFACE)
 
-# sfml
-find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+# include directories
+include_directories(lib ${DOCTEST_LIB})
 
 add_subdirectory(src)
 # add_subdirectory(test)
 
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} Library sfml-graphics sfml-window sfml-system)
+target_link_libraries(${PROJECT_NAME} Library)
