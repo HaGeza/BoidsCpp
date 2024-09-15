@@ -31,8 +31,8 @@ class SFMLDisplay : public IDisplay {
    public:
     SFMLDisplay(uint pxWidth, uint pxHeight);
     ~SFMLDisplay();
-    void initialize(vec<Boid> boids) override;
-    void update(vec<Boid> boids) override;
+    void initialize(const vec<Boid>& boids) override;
+    void update(const vec<Boid>& boids) override;
     void handleEvents() override;
     bool isRunning() override;
 };

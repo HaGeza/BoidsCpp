@@ -7,12 +7,12 @@ ASCIIDisplay::ASCIIDisplay(uint numCols, uint numRows)
       numRows(numRows),
       grid(vec<vec<char>>(numRows, vec<char>(numCols, ' '))) {}
 
-void ASCIIDisplay::initialize(vec<Boid> boids) {
+void ASCIIDisplay::initialize(const vec<Boid>& boids) {
     updateGrid(boids);
     writeGrid();
 }
 
-void ASCIIDisplay::update(vec<Boid> boids) {
+void ASCIIDisplay::update(const vec<Boid>& boids) {
     updateGrid(boids);
 
     // Move cursor to top left of terminal
@@ -21,7 +21,7 @@ void ASCIIDisplay::update(vec<Boid> boids) {
     writeGrid();
 }
 
-void ASCIIDisplay::updateGrid(vec<Boid> boids) {
+void ASCIIDisplay::updateGrid(const vec<Boid>& boids) {
     for (auto& row : grid) {
         std::fill(row.begin(), row.end(), ' ');
     }

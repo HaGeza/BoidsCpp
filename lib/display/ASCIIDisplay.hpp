@@ -7,9 +7,9 @@ class ASCIIDisplay : public IDisplay {
 
    public:
     ASCIIDisplay(uint numCols, uint numRows);
-    void initialize(vec<Boid> boids) override;
-    void update(vec<Boid> boids) override;
+    void initialize(const vec<Boid>& boids) override;
+    void update(const vec<Boid>& boids) override;
 
-    void updateGrid(vec<Boid> boids);
+    void updateGrid(const vec<Boid>& boids);
     void writeGrid();
 };

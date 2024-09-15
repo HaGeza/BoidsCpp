@@ -61,7 +61,7 @@ void SFMLDisplay::startRenderLoop() {
     }
 }
 
-void SFMLDisplay::initialize(vec<Boid> boids) {
+void SFMLDisplay::initialize(const vec<Boid>& boids) {
     {
         std::lock_guard<std::mutex> lock(boidsMutex);
         this->boids = boids;
@@ -71,7 +71,7 @@ void SFMLDisplay::initialize(vec<Boid> boids) {
     renderThread = std::thread([this]() { startRenderLoop(); });
 }
 
-void SFMLDisplay::update(vec<Boid> boids) {
+void SFMLDisplay::update(const vec<Boid>& boids) {
     std::lock_guard<std::mutex> lock(boidsMutex);
     this->boids = boids;
 }
