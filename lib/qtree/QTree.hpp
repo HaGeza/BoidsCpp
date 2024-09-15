@@ -11,8 +11,7 @@ class QTree {
    public:
     QTree(double size, uint maxEntriesPerNode);
     void insert(double x, double y, size_t index);
-    // umap<size_t, uset<size_t>> getNeighborhoods(double r) const;
-
+    umap<size_t, uset<size_t>> getNeighborhoods(double r) const;
     size_t getNumEntries() const;
 };
 

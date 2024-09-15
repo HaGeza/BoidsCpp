@@ -26,6 +26,10 @@ void QTree::insert(double x, double y, size_t index) {
     root.insert(index, positions);
 }
 
+umap<size_t, uset<size_t>> QTree::getNeighborhoods(double r) const {
+    return root.getNeighborhoods(r, positions);
+}
+
 size_t QTree::getNumEntries() const { return positions.size(); }
 
 // Doctests
