@@ -1,3 +1,6 @@
+#ifndef BOIDMANAGER_HPP
+#define BOIDMANAGER_HPP
+
 #include <atomic>
 #include <chrono>
 #include <thread>
@@ -20,3 +23,5 @@ class BoidManager {
 
     void run();
 };
+
+#endif  // BOIDMANAGER_HPP

@@ -1,3 +1,6 @@
+#ifndef QNODE_HPP
+#define QNODE_HPP
+
 #include <memory>
 
 #include "typedefs.hpp"
@@ -22,15 +25,4 @@ class QNode {
     const QNode* getChild(size_t index) const;
 };
 
-class QTree {
-    QNode root;
-    double size;
-    umap<size_t, dd> positions;
-
-   public:
-    QTree(double size, uint maxEntriesPerNode);
-    void insert(double x, double y, size_t index);
-    // umap<size_t, uset<size_t>> getNeighborhoods(double r) const;
-
-    size_t getNumEntries() const;
-};
+#endif  // QNODE_HPP

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef IDISPLAY_HPP
+#define IDISPLAY_HPP
 
 #include "Boid.hpp"
 #include "typedefs.hpp"
@@ -10,3 +11,5 @@ class IDisplay {
     virtual void handleEvents();
     virtual bool isRunning();
 };
+
+#endif  // IDISPLAY_HPP

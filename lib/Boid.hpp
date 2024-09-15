@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BOID_HPP
+#define BOID_HPP
 
 class Boid {
     double x, y, rotation;
@@ -13,3 +14,5 @@ class Boid {
 
     friend class BoidManager;
 };
+
+#endif  // BOID_HPP

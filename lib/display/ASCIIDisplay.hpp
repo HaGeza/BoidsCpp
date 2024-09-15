@@ -1,3 +1,6 @@
+#ifndef ASCIIDISPLAY_HPP
+#define ASCIIDISPLAY_HPP
+
 #include "IDisplay.hpp"
 
 class ASCIIDisplay : public IDisplay {
@@ -13,3 +16,5 @@ class ASCIIDisplay : public IDisplay {
     void updateGrid(const vec<Boid>& boids);
     void writeGrid();
 };
+
+#endif  // ASCIIDISPLAY_HPP

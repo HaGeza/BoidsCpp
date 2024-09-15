@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TYPEDEFS_HPP
+#define TYPEDEFS_HPP
 
 #include <map>
 #include <unordered_set>
@@ -18,3 +19,5 @@ template <typename K, typename V>
 using umap = std::unordered_map<K, V>;
 
 using dd = std::pair<double, double>;
+
+#endif  // TYPEDEFS_HPP

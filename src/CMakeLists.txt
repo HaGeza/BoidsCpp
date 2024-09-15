@@ -1,5 +1,6 @@
-file(GLOB_RECURSE SRC_FILES "**.cpp")
-add_library(Library SHARED ${SRC_FILES})
+file(GLOB_RECURSE SRC_FILES "*.cpp")
+file(GLOB_RECURSE NESTED_SRC_FILES "**/*.cpp")
+add_library(Library SHARED ${SRC_FILES} ${NESTED_SRC_FILES})
 
 # Link SFML libraries to this library
 target_link_libraries(Library sfml-graphics sfml-window sfml-system)
@@ -20,12 +21,13 @@ endfunction()
 
 # Add doctest tests
 FOREACH(TEST_FILE ${SRC_FILES})
-    file_contains_keyword(${TEST_FILE} "DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN" HAS_DOCTEST_MAIN)
+    file_contains_keyword(${TEST_FILE} "#include \"doctest.h\"" HAS_DOCTEST_INCLUDE)
+    file_contains_keyword(${TEST_FILE} "TEST_CASE" HAS_DOCTEST_CASE)
  
-    if (HAS_DOCTEST_MAIN)
+    if (HAS_DOCTEST_CASE AND HAS_DOCTEST_INCLUDE)
         get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
         add_executable(${TEST_NAME}_test ${TEST_FILE})
-        target_link_libraries(${TEST_NAME}_test doctest)
+        target_link_libraries(${TEST_NAME}_test doctest Library)
         set_target_properties(${TEST_NAME}_test PROPERTIES COMPILE_FLAGS "-g")
         add_test(NAME ${TEST_NAME}_test COMMAND ${TEST_NAME}_test)
     endif()

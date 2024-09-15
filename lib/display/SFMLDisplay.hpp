@@ -1,3 +1,6 @@
+#ifndef SFML_DISPLAY_HPP
+#define SFML_DISPLAY_HPP
+
 #include <SFML/Graphics.hpp>
 #include <atomic>
 #include <mutex>
@@ -36,3 +39,5 @@ class SFMLDisplay : public IDisplay {
     void handleEvents() override;
     bool isRunning() override;
 };
+
+#endif  // SFML_DISPLAY_HPP
