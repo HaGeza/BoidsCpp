@@ -1,8 +1,14 @@
 #ifndef BOID_HPP
 #define BOID_HPP
 
+#include "typedefs.hpp"
+
 class Boid {
     double x, y, rotation;
+    dd getUpdate(const uset<size_t>& neighbors, const vec<Boid>& boids,
+                 double speed, double separationRadius) const;
+
+    void update(dd change, double size);
 
    public:
     Boid();

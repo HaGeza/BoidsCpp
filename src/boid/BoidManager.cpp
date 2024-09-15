@@ -1,10 +1,20 @@
-#include "BoidManager.hpp"
+#include "boid/BoidManager.hpp"
 
 #include <math.h>
 
+#include <iostream>
+
 #define RAND_DBL ((double)rand() / RAND_MAX)
 
-BoidManager::BoidManager(IDisplay* display, uint numBoids) : display(display) {
+BoidManager::BoidManager(IDisplay* display, uint numBoids,
+                         IBoidNeighborhoods* boidNeighborhood,
+                         double boidNeighborhoodRadius, double boidSpeed)
+    : display(display),
+      boidNeighborhoods(boidNeighborhood),
+      running(false),
+      boidNeighborhoodRadius(boidNeighborhoodRadius),
+      boidSeparationRadius(boidNeighborhoodRadius * 0.5),
+      boidSpeed(boidSpeed) {
     boids = vec<Boid>(numBoids);
 
     for (uint i = 0; i < numBoids; i++) {
@@ -28,11 +38,19 @@ void BoidManager::startSimulation() {
     while (running) {
         auto start = std::chrono::high_resolution_clock::now();
 
-        int i = 0;
-        for (Boid& boid : boids) {
-            boid.x = std::fmod(1.0 + boid.x + cos(boid.rotation) * 0.01, 1.0);
-            boid.y = std::fmod(1.0 + boid.y + sin(boid.rotation) * 0.01, 1.0);
+        umap<size_t, uset<size_t>> neighborhoods =
+            boidNeighborhoods->calculate(boids);
+
+        vec<dd> updates(boids.size());
+        for (size_t i = 0; i < boids.size(); i++) {
+            updates[i] = boids[i].getUpdate(neighborhoods[i], boids, boidSpeed,
+                                            boidSeparationRadius);
         }
+
+        for (size_t i = 0; i < boids.size(); i++) {
+            boids[i].update(updates[i], SIZE);
+        }
+
         display->update(boids);
 
         auto elapsed = std::chrono::high_resolution_clock::now() - start;

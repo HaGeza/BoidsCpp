@@ -4,7 +4,8 @@
 #include <stdexcept>
 #include <string>
 
-#include "BoidManager.hpp"
+#include "boid/BoidManager.hpp"
+#include "boid/neighborhood/QTreeBoidNeighborhoods.hpp"
 #include "display/Display.hpp"
 
 // Enum for display type
@@ -91,7 +92,13 @@ int main(int argc, char* argv[]) {
             return 1;
     }
 
-    BoidManager boidManager(display, numBoids);
+    double boidRadius = 0.15;
+
+    IBoidNeighborhoods* boidNeighborhoods =
+        new QTreeBoidNeighborhoods(1.0, 2, boidRadius);
+
+    BoidManager boidManager(display, numBoids, boidNeighborhoods, boidRadius,
+                            0.01);
     boidManager.run();
 
     return 0;

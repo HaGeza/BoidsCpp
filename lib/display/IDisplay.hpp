@@ -1,7 +1,7 @@
 #ifndef IDISPLAY_HPP
 #define IDISPLAY_HPP
 
-#include "Boid.hpp"
+#include "boid/Boid.hpp"
 #include "typedefs.hpp"
 
 class IDisplay {

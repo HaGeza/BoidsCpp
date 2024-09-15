@@ -7,8 +7,8 @@
 #include "doctest.h"
 
 // QTree
-QTree::QTree(double size, uint maxEntriesPerNode)
-    : size(size), root(0, 0, size, maxEntriesPerNode), positions() {}
+QTree::QTree(double size, uint maxEntriesPerQuad)
+    : size(size), root(0, 0, size, maxEntriesPerQuad), positions() {}
 
 void QTree::insert(double x, double y, size_t index) {
     // TODO: Throw exception and write tests
