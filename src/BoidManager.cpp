@@ -12,6 +12,10 @@ BoidManager::BoidManager(IDisplay* display, uint numBoids) : display(display) {
     }
 
     display->initialize(boids);
+
+    while (display->isRunning()) {
+        display->handleEvents();
+    }
 }
 
 BoidManager::~BoidManager() {}

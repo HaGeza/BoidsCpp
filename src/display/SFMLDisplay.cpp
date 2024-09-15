@@ -5,10 +5,18 @@
 SFMLDisplay::SFMLDisplay(uint pxWidth, uint pxHeight)
     : pxWidth(pxWidth),
       pxHeight(pxHeight),
-      window(sf::VideoMode(pxWidth, pxHeight), "Boids") {
+      window(sf::VideoMode(pxWidth, pxHeight), "Boids"),
+      running(false) {
     baseHalf = 0.025 * pxHeight;
     altThird = 0.025 * pxHeight;
     alt2Thirds = 2 * altThird;
+}
+
+SFMLDisplay::~SFMLDisplay() {
+    running = false;
+    if (renderThread.joinable()) {
+        renderThread.join();
+    }
 }
 
 sf::ConvexShape SFMLDisplay::createTriangle(double x, double y,
@@ -25,33 +33,58 @@ sf::ConvexShape SFMLDisplay::createTriangle(double x, double y,
     return triangle;
 }
 
-void SFMLDisplay::initialize(vec<Boid> boids) {
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
+void SFMLDisplay::startRenderLoop() {
+    window.setActive(true);
+    sf::Clock clock;
+    while (running) {
+        clock.restart();
+        {
+            std::lock_guard<std::mutex> lock(windowMutex);
+            window.clear();
+            {
+                std::lock_guard<std::mutex> lock(boidsMutex);
+                for (Boid& boid : boids) {
+                    double x = boid.getX(), y = boid.getY(),
+                           rotation = boid.getRotation();
+                    window.draw(createTriangle(x, y, rotation));
+                }
             }
+            window.display();
         }
 
-        window.clear();
-        std::cout << "initialize" << std::endl;
-        for (Boid& boid : boids) {
-            double x = boid.getX(), y = boid.getY(),
-                   rotation = boid.getRotation();
-            window.draw(createTriangle(x, y, rotation));
+        // Busy waiting seems to be the only way to get consistent frame rate.
+        // sf::sleep is inconsistent (empirically), probably due to having to
+        // obtain thread control or something.
+        while (clock.getElapsedTime() < sf::milliseconds(FRAME_MS)) {
+            // pass
         }
-        window.display();
     }
 }
 
-void SFMLDisplay::update(vec<Boid> boids) {
-    // window.clear();
-    // for (Boid& boid : boids) {
-    //     sf::CircleShape circle(5);
-    //     circle.setPosition(boid.position.x, boid.position.y);
-    //     circle.setFillColor(sf::Color::White);
-    //     window.draw(circle);
-    // }
-    // window.display();
+void SFMLDisplay::initialize(vec<Boid> boids) {
+    {
+        std::lock_guard<std::mutex> lock(boidsMutex);
+        this->boids = boids;
+    }
+    running = true;
+    window.setActive(false);
+    renderThread = std::thread([this]() { this->startRenderLoop(); });
 }
+
+void SFMLDisplay::update(vec<Boid> boids) {
+    std::lock_guard<std::mutex> lock(boidsMutex);
+    this->boids = boids;
+}
+
+void SFMLDisplay::handleEvents() {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) {
+            std::lock_guard<std::mutex> lock(windowMutex);
+            running = false;
+            window.close();
+        }
+    }
+}
+
+bool SFMLDisplay::isRunning() { return running; }
