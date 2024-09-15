@@ -8,6 +8,24 @@ ASCIIDisplay::ASCIIDisplay(uint numCols, uint numRows)
       grid(vec<vec<char>>(numRows, vec<char>(numCols, ' '))) {}
 
 void ASCIIDisplay::initialize(vec<Boid> boids) {
+    updateGrid(boids);
+    writeGrid();
+}
+
+void ASCIIDisplay::update(vec<Boid> boids) {
+    updateGrid(boids);
+
+    // Move cursor to top left of terminal
+    std::cout << "\033[" << numRows << "A";
+
+    writeGrid();
+}
+
+void ASCIIDisplay::updateGrid(vec<Boid> boids) {
+    for (auto& row : grid) {
+        std::fill(row.begin(), row.end(), ' ');
+    }
+
     for (const Boid& boid : boids) {
         uint x = static_cast<uint>(boid.getX() * numCols);
         uint y = static_cast<uint>(boid.getY() * numRows);
@@ -23,7 +41,9 @@ void ASCIIDisplay::initialize(vec<Boid> boids) {
             grid[y][x] = '^';
         }
     }
+}
 
+void ASCIIDisplay::writeGrid() {
     for (const auto& row : grid) {
         for (char cell : row) {
             std::cout << cell;
@@ -31,5 +51,3 @@ void ASCIIDisplay::initialize(vec<Boid> boids) {
         std::cout << std::endl;
     }
 }
-
-void ASCIIDisplay::update(vec<Boid> boids) { return; }

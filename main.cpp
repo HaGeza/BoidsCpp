@@ -92,10 +92,7 @@ int main(int argc, char* argv[]) {
     }
 
     BoidManager boidManager(display, numBoids);
-
-    boidManager.start();
-
-    // TODO: implement some stopping mechanism
+    boidManager.run();
 
     return 0;
 }

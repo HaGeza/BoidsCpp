@@ -36,6 +36,8 @@ sf::ConvexShape SFMLDisplay::createTriangle(double x, double y,
 void SFMLDisplay::startRenderLoop() {
     window.setActive(true);
     sf::Clock clock;
+    auto frameDuration = sf::milliseconds(FRAME_MS);
+
     while (running) {
         clock.restart();
         {
@@ -52,11 +54,9 @@ void SFMLDisplay::startRenderLoop() {
             window.display();
         }
 
-        // Busy waiting seems to be the only way to get consistent frame rate.
-        // sf::sleep is inconsistent (empirically), probably due to having to
-        // obtain thread control or something.
-        while (clock.getElapsedTime() < sf::milliseconds(FRAME_MS)) {
-            // pass
+        auto elapsed = clock.getElapsedTime();
+        if (elapsed < frameDuration) {
+            sf::sleep(frameDuration - elapsed);
         }
     }
 }
@@ -68,7 +68,7 @@ void SFMLDisplay::initialize(vec<Boid> boids) {
     }
     running = true;
     window.setActive(false);
-    renderThread = std::thread([this]() { this->startRenderLoop(); });
+    renderThread = std::thread([this]() { startRenderLoop(); });
 }
 
 void SFMLDisplay::update(vec<Boid> boids) {

@@ -1,3 +1,7 @@
+#include <atomic>
+#include <chrono>
+#include <thread>
+
 #include "display/IDisplay.hpp"
 
 class BoidManager {
@@ -5,11 +9,14 @@ class BoidManager {
     vec<Boid> boids;
     // QTree* qTree;
     // ThreadPool* threadPool;
+    std::atomic<bool> running;
+    std::thread simulationThread;
+
+    void startSimulation();
 
    public:
     BoidManager(IDisplay* display, uint numBoids);
     ~BoidManager();
 
-    void start();
-    void stop();
+    void run();
 };
