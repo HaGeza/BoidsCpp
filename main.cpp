@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
             return 1;
     }
 
-    double boidRadius = 0.15;
+    double boidRadius = 0.25;
 
     IBoidNeighborhoods* boidNeighborhoods =
         new QTreeBoidNeighborhoods(1.0, 2, boidRadius);

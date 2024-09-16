@@ -6,7 +6,8 @@
 class Boid {
     double x, y, rotation;
     dd getUpdate(const uset<size_t>& neighbors, const vec<Boid>& boids,
-                 double speed, double separationRadius) const;
+                 double speed, double separationRadius, double gridSize,
+                 bool periodicBoundary) const;
 
     void update(dd change, double size);
 

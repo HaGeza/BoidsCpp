@@ -11,7 +11,8 @@ class QTreeBoidNeighborhoods : public IBoidNeighborhoods {
     QTreeBoidNeighborhoods(double size, uint maxBoidsPerQuad,
                            double boidNeighborhoodRadius);
 
-    umap<size_t, uset<size_t>> calculate(const vec<Boid>& boids) override;
+    umap<size_t, uset<size_t>> calculate(const vec<Boid>& boids,
+                                         bool periodicBoundary) override;
 };
 
 #endif  // QTREE_BOID_NEIGHBORHOODS_HPP

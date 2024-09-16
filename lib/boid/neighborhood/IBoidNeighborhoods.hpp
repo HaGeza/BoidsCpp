@@ -6,7 +6,8 @@
 
 class IBoidNeighborhoods {
    public:
-    virtual umap<size_t, uset<size_t>> calculate(const vec<Boid>& boids) = 0;
+    virtual umap<size_t, uset<size_t>> calculate(const vec<Boid>& boids,
+                                                 bool periodicBoundary) = 0;
 };
 
 #endif  // IBOID_NEIGHBORHOODS_HPP
