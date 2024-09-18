@@ -19,5 +19,6 @@ template <typename K, typename V>
 using umap = std::unordered_map<K, V>;
 
 using dd = std::pair<double, double>;
+using ddd = std::tuple<double, double, double>;
 
 #endif  // TYPEDEFS_HPP

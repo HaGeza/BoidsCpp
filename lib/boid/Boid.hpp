@@ -4,16 +4,16 @@
 #include "typedefs.hpp"
 
 class Boid {
-    double x, y, rotation;
+    double x, y, rotation, speed;
     dd getUpdate(const uset<size_t>& neighbors, const vec<Boid>& boids,
-                 double speed, double separationRadius, double gridSize,
-                 bool periodicBoundary) const;
+                 dd radii, ddd forceWeights, double gridSize,
+                 bool periodicBoundary = true) const;
 
     void update(dd change, double size);
 
    public:
     Boid();
-    Boid(double x, double y, double rotation);
+    Boid(double x, double y, double rotation, double speed);
 
     double getX() const;
     double getY() const;

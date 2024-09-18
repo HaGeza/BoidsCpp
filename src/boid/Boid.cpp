@@ -4,8 +4,8 @@
 
 Boid::Boid() : x(0), y(0) {}
 
-Boid::Boid(double x, double y, double rotation)
-    : x(x), y(y), rotation(rotation) {}
+Boid::Boid(double x, double y, double rotation, double speed)
+    : x(x), y(y), rotation(rotation), speed(speed) {}
 
 double Boid::getX() const { return x; }
 
@@ -14,14 +14,14 @@ double Boid::getY() const { return y; }
 double Boid::getRotation() const { return rotation; }
 
 dd Boid::getUpdate(const uset<size_t>& neighbors, const vec<Boid>& boids,
-                   double speed, double separationRadius, double gridSize,
+                   dd radii, ddd forceWeights, double gridSize,
                    bool periodicBoundary) const {
     uint neighborCount = neighbors.size();
-    uint closeNeibghborCount = 0;
+    uint closeNeighborCount = 0;
 
     dd cohesion = {0, 0}, separation = {0, 0}, alignment = {0, 0}, diff,
        closest, pushedNeighbor, push, pushedDiff;
-    double seperationRadius2 = separationRadius * separationRadius;
+    double sepRadius2 = radii.first * radii.first;
 
     for (size_t i : neighbors) {
         closest = {boids[i].x, boids[i].y};
@@ -46,50 +46,54 @@ dd Boid::getUpdate(const uset<size_t>& neighbors, const vec<Boid>& boids,
         cohesion.first += closest.first;
         cohesion.second += closest.second;
 
-        // TODO: use boid specific speed
         alignment.first += cos(boids[i].rotation);
         alignment.second += sin(boids[i].rotation);
 
-        if (pow(diff.first, 2) + pow(diff.second, 2) < seperationRadius2) {
+        if (pow(diff.first, 2) + pow(diff.second, 2) < sepRadius2) {
             separation.first += diff.first;
             separation.second += diff.second;
-            closeNeibghborCount++;
+            closeNeighborCount++;
         }
     }
 
     dd update = {speed * cos(rotation), speed * sin(rotation)};
 
+    double cohesionSpeed = std::get<0>(forceWeights) * speed,
+           alignmentSpeed = std::get<1>(forceWeights) * speed,
+           separationSpeed = std::get<2>(forceWeights) * speed;
+
     if (neighborCount > 0) {
         cohesion.first /= neighborCount;
         cohesion.second /= neighborCount;
-        // TODO: use weight parameter
-        update.first += (cohesion.first - x) * 0.3 * speed;
-        update.second += (cohesion.second - y) * 0.3 * speed;
+        update.first += (cohesion.first - x) * cohesionSpeed;
+        update.second += (cohesion.second - y) * cohesionSpeed;
 
         alignment.first /= neighborCount;
         alignment.second /= neighborCount;
-        // TODO: use weight parameter
-        update.first += alignment.first * 0.2 * speed;
-        update.second += alignment.second * 0.2 * speed;
+        update.first += alignment.first * alignmentSpeed;
+        update.second += alignment.second * alignmentSpeed;
 
-        if (closeNeibghborCount > 0) {
-            separation.first /= closeNeibghborCount;
-            separation.second /= closeNeibghborCount;
-            // TODO: use weight parameter
-            update.first += separation.first * 0.5 * speed;
-            update.second += separation.second * 0.5 * speed;
-
-            // std::cout << "separation: " << separation.first << ", "
-            //           << separation.second << std::endl;
+        if (closeNeighborCount > 0) {
+            separation.first /= closeNeighborCount;
+            separation.second /= closeNeighborCount;
+            update.first += separation.first * separationSpeed;
+            update.second += separation.second * separationSpeed;
         }
     }
 
     return update;
 }
 
-void Boid::update(dd change, double size) {
-    // TODO: account for periodic boundary conditions
-    x = fmod(size + x + change.first, size);
-    y = fmod(size + y + change.second, size);
-    rotation = (rotation + atan2(change.second, change.first)) / 2;
+void Boid::update(dd direction, double size) {
+    double directionAngle = atan2(direction.second, direction.first);
+    // std::cout << "Direction: " << direction.first << ", " << direction.second
+    //           << " --> " << directionAngle << " , " << rotation << std::endl;
+    dd change = {cos(directionAngle), sin(directionAngle)};
+    x = fmod(size + x + speed * change.first, size);
+    y = fmod(size + y + speed * change.second, size);
+
+    dd currentV = {cos(rotation), sin(rotation)};
+    rotation = atan2((currentV.second + change.second) / 2,
+                     (currentV.first + change.first) / 2);
+    // rotation = directionAngle;
 }

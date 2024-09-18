@@ -12,7 +12,8 @@ class BoidManager {
     IDisplay* display;
     IBoidNeighborhoods* boidNeighborhoods;
     vec<Boid> boids;
-    double boidNeighborhoodRadius, boidSeparationRadius, boidSpeed;
+    dd boidRadii, boidSpeed;
+    ddd boidForceWeights;
 
     std::atomic<bool> running;
     std::thread simulationThread;
@@ -23,8 +24,8 @@ class BoidManager {
 
    public:
     BoidManager(IDisplay* display, uint numBoids,
-                IBoidNeighborhoods* boidNeighborhoods,
-                double boidNeighborhoodRadius, double boidSpeed);
+                IBoidNeighborhoods* boidNeighborhoods, dd boidRadii,
+                dd boidSpeed, ddd boidForceWeights, uint randomSeed);
     ~BoidManager();
 
     void run();
