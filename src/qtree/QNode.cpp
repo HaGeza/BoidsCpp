@@ -203,14 +203,6 @@ TEST_CASE("QNode::getNeighborhoods") {
 
         auto neighborhoods = node.getNeighborhoods(5.0, positions);
 
-        for (auto [entry, neighbors] : neighborhoods) {
-            std::cout << entry << ": ";
-            for (size_t neighbor : neighbors) {
-                std::cout << neighbor << " ";
-            }
-            std::cout << "\n";
-        }
-
         CHECK(neighborhoods.size() == 7);
         CHECK(neighborhoods[0].size() == 2);
         CHECK(neighborhoods[1].size() == 1);

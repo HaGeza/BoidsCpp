@@ -32,7 +32,8 @@ int main(int argc, char* argv[]) {
 
     BoidManager boidManager(display, args.numBoids, boidNeighborhoods,
                             args.boidRadii, args.boidSpeed,
-                            args.boidForceWeights, args.randomSeed);
+                            args.boidForceWeights, args.randomSeed,
+                            args.periodicBoundary);
     boidManager.run();
 
     return 0;

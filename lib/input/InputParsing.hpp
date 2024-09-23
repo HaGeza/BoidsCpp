@@ -13,6 +13,7 @@ struct Arguments {
     dd boidRadii = {0.1, 0.2};
     dd boidSpeed = {0.01, 0.015};
     ddd boidForceWeights = {1.0, 1.0, 1.0};
+    bool periodicBoundary = false;
 };
 
 namespace InputParsing {

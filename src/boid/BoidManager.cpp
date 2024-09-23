@@ -8,13 +8,15 @@
 
 BoidManager::BoidManager(IDisplay* display, uint numBoids,
                          IBoidNeighborhoods* boidNeighborhood, dd boidRadii,
-                         dd boidSpeed, ddd boidForceWeights, uint randomSeed)
+                         dd boidSpeed, ddd boidForceWeights, uint randomSeed,
+                         bool periodicBoundary)
     : display(display),
       boidNeighborhoods(boidNeighborhood),
       running(false),
       boidRadii(boidRadii),
       boidSpeed(boidSpeed),
-      boidForceWeights(boidForceWeights) {
+      boidForceWeights(boidForceWeights),
+      periodicBoundary(periodicBoundary) {
     boids = vec<Boid>(numBoids);
 
     double speedRange = boidSpeed.second - boidSpeed.first;
@@ -44,16 +46,17 @@ void BoidManager::startSimulation() {
 
         umap<size_t, uset<size_t>> neighborhoods =
             // TODO: pass in periodicity as a parameter
-            boidNeighborhoods->calculate(boids, true);
+            boidNeighborhoods->calculate(boids, periodicBoundary);
 
         vec<dd> updates(boids.size());
         for (size_t i = 0; i < boids.size(); i++) {
-            updates[i] = boids[i].getUpdate(neighborhoods[i], boids, boidRadii,
-                                            boidForceWeights, SIZE);
+            updates[i] =
+                boids[i].getUpdate(neighborhoods[i], boids, boidRadii,
+                                   boidForceWeights, SIZE, periodicBoundary);
         }
 
         for (size_t i = 0; i < boids.size(); i++) {
-            boids[i].update(updates[i], SIZE);
+            boids[i].update(updates[i], SIZE, periodicBoundary);
         }
 
         display->update(boids);

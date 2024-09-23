@@ -107,11 +107,15 @@ Arguments InputParsing::parseArguments(int argc, char* argv[], bool verbose) {
 
     // Parse command-line arguments as key-value pairs
     umap<str, str> args;
-    for (int i = 1; i < argc - 1; i += 2) {
-        args[argv[i]] = argv[i + 1];
+    for (int i = 1; i < argc; i++) {
+        if (std::strcmp(argv[i], "--periodic") == 0) {
+            def.periodicBoundary = true;
+        } else if (i < argc - 1) {
+            args[argv[i++]] = argv[i + 1];
+        }
     }
 
-    // Process display type
+    // Process display type 
     if (args.find("--display") != args.end()) {
         str displayTypeStr = args["--display"];
         def.displayType = stringToDisplayType(displayTypeStr);
@@ -124,7 +128,7 @@ Arguments InputParsing::parseArguments(int argc, char* argv[], bool verbose) {
 
     // Process number of boids
     def.numBoids =
-        parseUnsignedInt(args, "--num-boids", "number of boids", def.numBoids);
+        parseUnsignedInt(args, "--numBoids", "number of boids", def.numBoids);
 
     // Process random seed
     def.randomSeed =
@@ -175,9 +179,11 @@ Arguments InputParsing::parseArguments(int argc, char* argv[], bool verbose) {
         std::cout << std::endl;
         std::cout << "Speed Range: " << def.boidSpeed.first << " - "
                   << def.boidSpeed.second << std::endl;
+        std::cout << "Periodic Boundary: " << def.periodicBoundary << std::endl;
     }
 
     def.boidForceWeights = {weights[0], weights[1], weights[2]};
-    return {def.displayType, def.numBoids,  def.randomSeed,
-            def.boidRadii,   def.boidSpeed, def.boidForceWeights};
+    return {def.displayType,     def.numBoids,  def.randomSeed,
+            def.boidRadii,       def.boidSpeed, def.boidForceWeights,
+            def.periodicBoundary};
 }

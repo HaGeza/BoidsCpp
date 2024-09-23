@@ -9,7 +9,7 @@ class Boid {
                  dd radii, ddd forceWeights, double gridSize,
                  bool periodicBoundary = true) const;
 
-    void update(dd change, double size);
+    void update(dd change, double size, bool periodicBoundary);
 
    public:
     Boid();

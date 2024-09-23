@@ -14,7 +14,7 @@ double Boid::getY() const { return y; }
 double Boid::getRotation() const { return rotation; }
 
 dd Boid::getUpdate(const uset<size_t>& neighbors, const vec<Boid>& boids,
-                   dd radii, ddd forceWeights, double gridSize,
+                   dd radii, ddd forceWeights, double worldSize,
                    bool periodicBoundary) const {
     uint neighborCount = neighbors.size();
     uint closeNeighborCount = 0;
@@ -28,8 +28,8 @@ dd Boid::getUpdate(const uset<size_t>& neighbors, const vec<Boid>& boids,
         diff = {x - boids[i].x, y - boids[i].y};
         if (periodicBoundary) {
             pushedNeighbor = {
-                boids[i].x + (x > boids[i].x ? gridSize : -gridSize),
-                boids[i].y + (y > boids[i].y ? gridSize : -gridSize),
+                boids[i].x + (x > boids[i].x ? worldSize : -worldSize),
+                boids[i].y + (y > boids[i].y ? worldSize : -worldSize),
             };
             pushedDiff = {x - pushedNeighbor.first, y - pushedNeighbor.second};
 
@@ -81,19 +81,42 @@ dd Boid::getUpdate(const uset<size_t>& neighbors, const vec<Boid>& boids,
         }
     }
 
+    if (!periodicBoundary) {
+        double threshold = worldSize * 0.15;
+        dd avoidance = {0, 0};
+
+        if (x < threshold) {
+            avoidance.first = threshold - x;
+        } else if (worldSize - x < threshold) {
+            avoidance.first = -threshold + worldSize - x;
+        }
+
+        if (y < threshold) {
+            avoidance.second = threshold - y;
+        } else if (worldSize - y < threshold) {
+            avoidance.second = -threshold + worldSize - y;
+        }
+
+        update.first += speed * 4 * avoidance.first;
+        update.second += speed * 4 * avoidance.second;
+    }
+
     return update;
 }
 
-void Boid::update(dd direction, double size) {
-    double directionAngle = atan2(direction.second, direction.first);
-    // std::cout << "Direction: " << direction.first << ", " << direction.second
-    //           << " --> " << directionAngle << " , " << rotation << std::endl;
-    dd change = {cos(directionAngle), sin(directionAngle)};
-    x = fmod(size + x + speed * change.first, size);
-    y = fmod(size + y + speed * change.second, size);
+void Boid::update(dd change, double worldSize, bool periodicBoundary) {
+    // double norm =
+    //     std::sqrt(std::pow(change.first, 2) + std::pow(change.second, 2));
 
-    dd currentV = {cos(rotation), sin(rotation)};
-    rotation = atan2((currentV.second + change.second) / 2,
-                     (currentV.first + change.first) / 2);
-    // rotation = directionAngle;
+    // double scaler = std::min(1.0, 3 * speed / norm);
+    // change = {change.first * scaler, change.second * scaler};
+
+    if (periodicBoundary) {
+        x = std::fmod(worldSize + x + change.first, worldSize);
+        y = std::fmod(worldSize + y + change.second, worldSize);
+    } else {
+        x = std::max(0.0001, std::min(worldSize - 0.0001, x + change.first));
+        y = std::max(0.0001, std::min(worldSize - 0.0001, y + change.second));
+    }
+    rotation = atan2(change.second, change.first);
 }
