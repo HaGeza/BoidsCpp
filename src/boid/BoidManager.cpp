@@ -48,7 +48,7 @@ void BoidManager::startSimulation() {
             // TODO: pass in periodicity as a parameter
             boidNeighborhoods->calculate(boids, periodicBoundary);
 
-        vec<dd> updates(boids.size());
+        vec<Vec2> updates(boids.size());
         for (size_t i = 0; i < boids.size(); i++) {
             updates[i] =
                 boids[i].getUpdate(neighborhoods[i], boids, boidRadii,

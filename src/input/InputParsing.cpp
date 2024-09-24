@@ -168,6 +168,12 @@ Arguments InputParsing::parseArguments(int argc, char* argv[], bool verbose) {
     def.boidRadii = parseNonDecreasingPositiveDoublePair(
         args, "--radii", "radii", def.boidRadii);
 
+    // Normalize weights
+    double weightSum = weights[0] + weights[1] + weights[2];
+    for (int i = 0; i < 3; i++) {
+        weights[i] /= weightSum;
+    }
+
     if (verbose) {
         std::cout << "Display Type: " << displayToStr(def.displayType)
                   << std::endl;
