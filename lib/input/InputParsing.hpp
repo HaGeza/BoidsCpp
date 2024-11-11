@@ -8,11 +8,11 @@ enum class DisplayType { ASCII, SFML, UNKNOWN };
 
 struct Arguments {
     DisplayType displayType = DisplayType::SFML;
-    uint numBoids = 10;
-    uint randomSeed = 0;
+    uint numBoids = 50;
+    uint randomSeed = 42;
     dd boidRadii = {0.1, 0.2};
     dd boidSpeed = {0.01, 0.015};
-    ddd boidForceWeights = {1.0, 1.0, 1.0};
+    ddd boidForceWeights = {10.0, 10.0, 100.0};
     bool periodicBoundary = false;
 };
 
